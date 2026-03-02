@@ -9,4 +9,4 @@ wheels/
 # Virtual environments
 .venv
 
-API.env
+.env
