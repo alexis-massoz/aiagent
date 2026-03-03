@@ -12,8 +12,21 @@ def run_python_file(working_directory, file_path, args=None):
             return f'Error: "{file_path}" does not exist or is not a regular file'
         if file_path.endswith(".py") is False:
             return f'Error: "{file_path}" is not a Python file'
-        command = ["python", target_file].extend(args)
-        complete_process_object = subprocess.run(command, capture_output=True, text=True, timeout=30)
-        return
+        command = ["python", target_file]
+        if args is not None:
+            command.extend(args)
+        complete_process_object = subprocess.run(command, cwd=working_dir_abs, capture_output=True, text=True, timeout=30)
+        output_list = []
+        if complete_process_object.returncode !=0:
+            output_list.append(f'Process exited with code {complete_process_object.returncode}')
+        if complete_process_object.stdout == "":
+            output_list.append('No output produced')
+        else :
+            output_list.append(f'STDOUT: {complete_process_object.stdout}') 
+        if complete_process_object.stderr == "":
+            output_list.append('No output produced')
+        else:
+            output_list.append(f'STDERR: {complete_process_object.stderr}')
+        return "\n".join(output_list)
     except Exception as e: 
-        return f'Error: {e}'
+        return f"Error: executing Python file: {e}"
