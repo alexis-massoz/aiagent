@@ -1,4 +1,20 @@
 import os 
+from google import genai
+
+schema_get_file_content = types.FunctionDeclaration(
+    name="write_file",
+    description="Writes in a specified file relative to the working directory",
+    parameters=types.Schema(
+        type=types.Type.OBJECT,
+        properties={
+            "file_path": types.Schema(
+                type=types.Type.STRING,
+                description="Directory path to file from, relative to the working directory (default is the working directory itself)",
+            ),
+        },
+    ),
+)
+
 def write_file(working_directory, file_path, content):
     try:
         working_dir_abs = os.path.abspath(working_directory)
