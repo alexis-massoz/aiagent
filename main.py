@@ -24,15 +24,27 @@ def main():
         contents = messages, 
         config=types.GenerateContentConfig(tools=[available_functions],system_instruction=system_prompt)
     )
-    if response.function_calls is not None:
-        for function_call in response.function_calls:
-            print(f"Calling function: {function_call.name}({function_call.args})")
-    else:
-        print(response.text)
-    if response.usage_metadata is not None and args.verbose is True:
+    function_responses = []
+    for function_call in response.function_calls:
+        result = call_function(function_call, args.verbose)
+        if result.parts == []:
+            raise RuntimeError
+        if result.parts[0].function_response is None:
+            raise RuntimeError
+        if result.parts[0].function_response.response is None:
+            raise RuntimeError
+        if args.verbose:
+            # Extract the dictionary
+            response_dict = result.parts[0].function_response.response
+            # Get the "result" string, defaulting to an empty string if it's missing
+            result_text = response_dict.get("result", "")
+            print(f"-> Result:\n{result_text}")
+
+
+    '''if response.usage_metadata is not None and args.verbose is True:
         print(f"User prompt: {args.user_prompt}")
         print(f"Prompt tokens: {response.usage_metadata.prompt_token_count}")
-        print(f"Response tokens: {response.usage_metadata.candidates_token_count}")
+        print(f"Response tokens: {response.usage_metadata.candidates_token_count}")'''
     if response.usage_metadata is None:
         raise RuntimeError("Failed API request")
     

@@ -1,18 +1,24 @@
 import os 
 from google import genai
 
-schema_get_file_content = types.FunctionDeclaration(
+schema_write_file = genai.types.FunctionDeclaration(
     name="write_file",
     description="Writes in a specified file relative to the working directory",
-    parameters=types.Schema(
-        type=types.Type.OBJECT,
+    parameters=genai.types.Schema(
+        type=genai.types.Type.OBJECT,
         properties={
-            "file_path": types.Schema(
-                type=types.Type.STRING,
+            "file_path": genai.types.Schema(
+                type=genai.types.Type.STRING,
                 description="Directory path to file from, relative to the working directory (default is the working directory itself)",
             ),
+            "content": genai.types.Schema(
+                type=genai.types.Type.STRING,
+                description="content to write in file",
+            ),
         },
+        required=["file_path", "content"]
     ),
+    
 )
 
 def write_file(working_directory, file_path, content):

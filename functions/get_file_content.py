@@ -2,18 +2,20 @@ import os
 from config import *
 from google import genai
 
-schema_get_file_content = types.FunctionDeclaration(
+schema_get_file_content = genai.types.FunctionDeclaration(
     name="get_file_content",
     description="Lists content (entire or truncated at max_char value) of a specified file relative to the working directory",
-    parameters=types.Schema(
-        type=types.Type.OBJECT,
+    parameters=genai.types.Schema(
+        type=genai.types.Type.OBJECT,
         properties={
-            "file_path": types.Schema(
-                type=types.Type.STRING,
+            "file_path": genai.types.Schema(
+                type=genai.types.Type.STRING,
                 description="Directory path to file from, relative to the working directory (default is the working directory itself)",
             ),
         },
+        required=["file_path"]
     ),
+    
 )
 
 def get_file_content(working_directory, file_path):
